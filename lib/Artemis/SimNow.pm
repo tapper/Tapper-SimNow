@@ -62,7 +62,7 @@ sub create_console
         close $fh;
         my $pipedir         = dirname($self->cfg->{files}{simnow_console});
         $self->makedir($pipedir) unless -d $pipedir;
-        my $retval          = $self->log_and_exec("ln","-s", $outfile, $self->cfg->{files}{simnow_console});
+        my $retval          = $self->log_and_exec("ln","-sf", $outfile, $self->cfg->{files}{simnow_console});
         return $retval;
 }
 
