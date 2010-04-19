@@ -1,0 +1,14 @@
+#!/usr/bin/env perl
+
+use common::sense;
+
+use Artemis::SimNow;
+use Log::Log4perl;
+
+BEGIN {
+        Log::Log4perl::init('/etc/log4perl.cfg');
+}
+
+
+my $sim = Artemis::SimNow->new();
+$sim->run();
