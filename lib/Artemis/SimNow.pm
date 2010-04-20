@@ -25,7 +25,7 @@ Artemis::SimNow - Control running a SimNow session!
 
 =cut
 
-our $VERSION = '1.000017';
+our $VERSION = '1.000018';
 
 
 =head1 SYNOPSIS
@@ -144,6 +144,7 @@ sub run
         $net->mcp_inform("start-test");
 
         my $retval;
+        $retval = $self->kill_instance($self->cfg->{paths}->{pids_path}."/simnow.pid");
         $retval = $self->create_console();
         $retval = $self->start_mediator();
         $retval = $self->start_simnow();
