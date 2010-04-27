@@ -25,7 +25,7 @@ Artemis::SimNow - Control running a SimNow session!
 
 =cut
 
-our $VERSION = '1.000018';
+our $VERSION = '1.000023';
 
 
 =head1 SYNOPSIS
@@ -58,8 +58,11 @@ sub create_console
         my $out_dir         = $self->cfg->{paths}{output_dir}."/$test_run/test/";
         $self->makedir($out_dir) unless -d $out_dir;
         my $outfile         = $out_dir."/simnow_console";
+        
+        # create the file, otherwise simnow can't write to it
         open my $fh, ">", $outfile or return "Can not open $outfile: $!";
         close $fh;
+
         my $pipedir         = dirname($self->cfg->{files}{simnow_console});
         $self->makedir($pipedir) unless -d $pipedir;
         my $retval          = $self->log_and_exec("ln","-sf", $outfile, $self->cfg->{files}{simnow_console});
@@ -145,9 +148,16 @@ sub run
 
         my $retval;
         $retval = $self->kill_instance($self->cfg->{paths}->{pids_path}."/simnow.pid");
+        $self->log->logdie($retval) if $retval;
+
         $retval = $self->create_console();
+        $self->log->logdie($retval) if $retval;
+
         $retval = $self->start_mediator();
+        $self->log->logdie($retval) if $retval;
+
         $retval = $self->start_simnow();
+        $self->log->logdie($retval) if $retval;
 
         $net->mcp_inform("end-test");
         return 0;
