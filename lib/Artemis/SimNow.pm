@@ -58,7 +58,7 @@ sub create_console
         my $out_dir         = $self->cfg->{paths}{output_dir}."/$test_run/test/";
         $self->makedir($out_dir) unless -d $out_dir;
         my $outfile         = $out_dir."/simnow_console";
-        
+
         # create the file, otherwise simnow can't write to it
         open my $fh, ">", $outfile or return "Can not open $outfile: $!";
         close $fh;
@@ -84,7 +84,7 @@ Start the simnow process.
 sub start_simnow
 {
         my ($self) = @_;
-        
+
         my $config_file     = $self->cfg->{files}{config_file};
         my $test_run        = $self->cfg->{test_run};
         my $out_dir         = $self->cfg->{paths}{output_dir}."/$test_run/test/";
