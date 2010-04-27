@@ -54,6 +54,7 @@ Create console file for output of system under test in simnow.
 sub create_console
 {
         my ($self) = @_;
+        $self->log->debug("Creating console links");
         my $test_run        = $self->cfg->{test_run};
         my $out_dir         = $self->cfg->{paths}{output_dir}."/$test_run/test/";
         $self->makedir($out_dir) unless -d $out_dir;
@@ -84,6 +85,7 @@ Start the simnow process.
 sub start_simnow
 {
         my ($self) = @_;
+        $self->log->debug("starting simnow");
 
         my $config_file     = $self->cfg->{files}{config_file};
         my $test_run        = $self->cfg->{test_run};
@@ -117,6 +119,8 @@ Start the mediator process.
 sub start_mediator
 {
         my ($self) = @_;
+        $self->log->debug("starting mediator");
+
         my $retval = $self->run_one({command  => $self->cfg->{paths}->{simnow_path}."/mediator",
                                      pid_file => $self->cfg->{paths}->{pids_path}."/mediator.pid",
                                     });
@@ -139,6 +143,8 @@ messages to MCP and console handling.
 sub run
 {
         my ($self) = @_;
+        $self->log->info("Starting Simnow");
+
         my $consumer = Artemis::Remote::Config->new();
         my $net      = Artemis::Remote::Net->new();
         my $config   = $consumer->get_local_data('simnow');
@@ -160,6 +166,7 @@ sub run
         $self->log->logdie($retval) if $retval;
 
         $net->mcp_inform("end-test");
+        $self->log->info("Simnow prepared and running");
         return 0;
 }
 
