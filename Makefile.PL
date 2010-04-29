@@ -10,8 +10,8 @@ install_script 'bin/artemis-simnow-start';
 build_requires 'Test::More';
 
 requires 'common::sense';
-requires 'Artemis::Base'   => '0.010013';
-requires 'Artemis::Remote' => '1.000013';
+requires 'Artemis::Base'   => '0.010015';
+requires 'Artemis::Remote' => '1.000018';
 requires 'Log::Log4perl';
 
 
