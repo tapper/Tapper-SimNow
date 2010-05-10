@@ -1,9 +1,5 @@
 # Avoid version control files.
-\bRCS\b
-\bCVS\b
-,v$
-\B\.svn\b
-\B\.cvsignore$
+\B\.gitignore$
 
 # Avoid Makemaker generated and utility files.
 \bMakefile$
@@ -30,10 +26,5 @@
 \.#
 \.rej$
 
-# Avoid OS-specific files/dirs
-#   Mac OSX metadata
-\B\.DS_Store
-#   Mac OSX SMB mount metadata files
-\B\._
 # Avoid archives of this distribution
-\bArtemis-PRC-[\d\.\_]+
+\bArtemis-SimNow-[\d\.\_]+
