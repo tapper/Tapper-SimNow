@@ -25,7 +25,7 @@ Artemis::SimNow - Control running a SimNow session!
 
 =cut
 
-our $VERSION = '1.000023';
+our $VERSION = '1.000036';
 
 
 =head1 SYNOPSIS
@@ -39,6 +39,114 @@ module Artemis is able to treat similar to virtualisation tests.
     $simnow->run();
 
 =head1 FUNCTIONS
+
+=head2 get_static_tap_headers
+
+Create a report hash that contains all headers that don't need to be
+produced somehow. This includes suite-name and suite-version for
+example.
+
+@return string - tap headers
+
+=cut
+
+sub get_static_tap_headers
+{
+        my ($self, $report) = @_;
+        $report->{headers}{'Artemis-reportgroup-testrun'} = $self->cfg->{test_run};
+        $report->{headers}{'Artemis-suite-name'}          = "SimNow-Metainfo";
+        $report->{headers}{'Artemis-suite-version'}       = $VERSION;
+        $report->{headers}{'Artemis-machine-name'}        = $self->cfg->{hostname};
+        return $report;
+}
+
+=head2 generate_meta_report
+
+Generate a report containing metainformation about the SimNow we use.
+
+@return hash ref - report data as expected by Remote::Net->tap_report_create()
+
+=cut
+
+sub generate_meta_report
+{
+
+        my ($self) = @_;
+        my $report;
+        $report = $self->get_static_tap_headers($report);
+
+        my $error  = 0;
+        my ($success, $retval) = $self->log_and_exec($self->cfg->{paths}->{simnow_path}."/simnow","--version");
+        if ($success != 1) {
+                push @{$report->{tests}}, {error => 1, test => "Getting SimNow version"};
+        } else {
+                push @{$report->{tests}}, {test => "Getting SimNow version"};
+
+                if ($retval =~ m/This is AMD SimNow version (\d+\.\d+\.\d+(-NDA)?)/) {
+                        $report->{headers}{'Artemis-SimNow-Version'} = $1;
+                } else {
+                        $report->{headers}{'Artemis-SimNow-Version'} = 'Not set';
+                        $error = 1;
+                }
+                push @{$report->{tests}}, {error => $error, test => "Parsing SimNow version"};
+
+
+                $error = 0;
+                if ($retval =~ m/This internal release is built from revision: (.+) of SVN URL: (.+)/) {
+                        $report->{headers}{'Artemis-SimNow-SVN-Version'}    =  $1;
+                        $report->{headers}{'Artemis-SimNow-SVN-Repository'} =  $2;
+                } elsif ($retval =~ m/Build number: (.+)/) {
+                        $report->{headers}{'Artemis-SimNow-SVN-Version'}    =  $1;
+                        $report->{headers}{'Artemis-SimNow-SVN-Repository'} =  'Not set';
+                } else {
+                        $report->{headers}{'Artemis-SimNow-SVN-Version'}    =  'Not set';
+                        $report->{headers}{'Artemis-SimNow-SVN-Repository'} =  'Not set';
+                        $error = 1;
+                }
+                push @{$report->{tests}}, {error => $error, test => "Parsing SVN version"};
+
+                $error = 0;
+                if ($retval =~ m/supporting version (\d+) of the AMD SimNow Device Interface/) {
+                        $report->{headers}{'Artemis-SimNow-Device-Interface-Version'} = $1;
+                } else {
+                        $report->{headers}{'Artemis-SimNow-Device-Interface-Version'} = 'Not set';
+                        $error = 1;
+                }
+                push @{$report->{tests}}, {error => $error, test => "Parsing device interface version"};
+        }
+
+        $error = 0;
+        if (open my $fh ,"<", $self->cfg->{files}{config_file}) {
+                my $content = do {local $/; <$fh>};
+                close $fh;
+
+                if ($content =~ m|open bsds/(\w+)\.bsd|) {
+                        $report->{headers}{'Artemis-SimNow-BSD-File'} = $1;
+                } else {
+                        $error = 1;
+                }
+                push @{$report->{tests}}, {error => $error, test => "Getting BSD file information"};
+
+                $error = 0;
+                if ($content =~ m|ide:0.image master .*/((?:\w\|\.)+?)(?:\.[a-zA-Z]+)?$|m) {
+                        $report->{headers}{'Artemis-SimNow-Image-File'} = $1;
+                } else {
+                        $error = 1;
+                }
+                push @{$report->{tests}}, {error => $error, test => "Getting image file information"};
+
+                $error = 0;
+        } else {
+                $report->{headers}{'Artemis-SimNow-BSD-File'} = 'Not set';
+                $report->{headers}{'Artemis-SimNow-Image-File'} = 'Not set';
+                $error = 1;
+        }
+        push @{$report->{tests}}, {error => $error, test => "Reading Simnow config file"};
+        return $report;
+
+}
+
+
 
 =head2 create_console
 
@@ -96,7 +204,6 @@ sub start_simnow
         open (STDOUT, ">>$output.stdout") or return("Can't open output file $output.stdout: $!");
         open (STDERR, ">>$output.stderr") or return("Can't open output file $output.stderr: $!");
 
-        chdir $self->cfg->{paths}->{simnow_path};
         my $retval          = $self->run_one({command  => $self->cfg->{paths}->{simnow_path}."/simnow",
                                               argv     => [ "-e", $config_file, '--nogui' ],
                                               pid_file => $self->cfg->{paths}->{pids_path}."/simnow.pid",
@@ -146,26 +253,42 @@ sub run
         $self->log->info("Starting Simnow");
 
         my $consumer = Artemis::Remote::Config->new();
-        my $net      = Artemis::Remote::Net->new();
         my $config   = $consumer->get_local_data('simnow');
         die $config unless ref($config) eq 'HASH';
+        my $net      = Artemis::Remote::Net->new($config);
         $self->cfg( $config );
         $net->mcp_inform("start-test");
 
+        # simnow only runs in its own directory due to lib issues
+        chdir $self->cfg->{paths}->{simnow_path};
+
         my $retval;
-        $retval = $self->kill_instance($self->cfg->{paths}->{pids_path}."/simnow.pid");
-        $self->log->logdie($retval) if $retval;
+        {
+                $retval = $self->kill_instance($self->cfg->{paths}->{pids_path}."/simnow.pid");
+                last if $retval;
 
-        $retval = $self->create_console();
-        $self->log->logdie($retval) if $retval;
+                $retval = $self->create_console();
+                last if $retval;
 
-        $retval = $self->start_mediator();
-        $self->log->logdie($retval) if $retval;
+                my $report = $self->generate_meta_report();
+                my $tap = $net->tap_report_create($report);
+                my $error;
+                ($error, $retval) = $net->tap_report_away($tap);
+                last if $error;
 
-        $retval = $self->start_simnow();
-        $self->log->logdie($retval) if $retval;
+                $retval = $self->start_mediator();
+                last if $retval;
 
+                $retval = $self->start_simnow();
+                last if $retval;
+
+        }
+        if ($retval) {
+                $net->mcp_send({state => 'error-guest', error => $retval});
+                $self->log->logdie($retval);
+        }
         $net->mcp_inform("end-test");
+
         $self->log->info("Simnow prepared and running");
         return 0;
 }
