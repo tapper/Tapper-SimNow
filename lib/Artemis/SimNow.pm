@@ -25,7 +25,7 @@ Artemis::SimNow - Control running a SimNow session!
 
 =cut
 
-our $VERSION = '1.000036';
+our $VERSION = '1.000037';
 
 
 =head1 SYNOPSIS
@@ -116,7 +116,7 @@ sub generate_meta_report
         }
 
         $error = 0;
-        if (open my $fh ,"<", $self->cfg->{files}{config_file}) {
+        if (open my $fh ,"<", $self->cfg->{files}{simnow_script}) {
                 my $content = do {local $/; <$fh>};
                 close $fh;
 
@@ -195,7 +195,7 @@ sub start_simnow
         my ($self) = @_;
         $self->log->debug("starting simnow");
 
-        my $config_file     = $self->cfg->{files}{config_file};
+        my $simnow_script   = $self->cfg->{files}{simnow_script};
         my $test_run        = $self->cfg->{test_run};
         my $out_dir         = $self->cfg->{paths}{output_dir}."/$test_run/test/";
         $self->makedir($out_dir) unless -d $out_dir;
@@ -205,7 +205,7 @@ sub start_simnow
         open (STDERR, ">>$output.stderr") or return("Can't open output file $output.stderr: $!");
 
         my $retval          = $self->run_one({command  => $self->cfg->{paths}->{simnow_path}."/simnow",
-                                              argv     => [ "-e", $config_file, '--nogui' ],
+                                              argv     => [ "-e", $simnow_script, '--nogui' ],
                                               pid_file => $self->cfg->{paths}->{pids_path}."/simnow.pid",
                                              });
         return $retval;
