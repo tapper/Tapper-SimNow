@@ -25,7 +25,7 @@ Artemis::SimNow - Control running a SimNow session!
 
 =cut
 
-our $VERSION = '1.000037';
+our $VERSION = '1.000038';
 
 
 =head1 SYNOPSIS
@@ -77,7 +77,7 @@ sub generate_meta_report
 
         my $error  = 0;
         my ($success, $retval) = $self->log_and_exec($self->cfg->{paths}->{simnow_path}."/simnow","--version");
-        if ($success != 1) {
+        if ($success) {
                 push @{$report->{tests}}, {error => 1, test => "Getting SimNow version"};
         } else {
                 push @{$report->{tests}}, {test => "Getting SimNow version"};
