@@ -14,7 +14,8 @@ This internal release is built from revision: 17050 of SVN URL: svn+ssh://svdcsv
 
 my $mock =Test::MockModule->new('Artemis::Base');
 $mock->mock('run_one', sub { return 0 });
-$mock->mock('log_and_exec', sub { return (1, $version_string) });
+$mock->mock('log_and_exec', sub { return (0, $version_string) });
+
 
 
 my $sim = Artemis::SimNow->new({cfg => {test_run => 1337, hostname => 'localhost'}});
