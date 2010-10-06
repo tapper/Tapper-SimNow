@@ -201,8 +201,8 @@ sub start_simnow
         $self->makedir($out_dir) unless -d $out_dir;
         my $output          = $out_dir.'/simnow';
 
-        open (STDOUT, ">>$output.stdout") or return("Can't open output file $output.stdout: $!");
-        open (STDERR, ">>$output.stderr") or return("Can't open output file $output.stderr: $!");
+        open (STDOUT, ">>", "$output.stdout") or return("Can't open output file $output.stdout: $!");
+        open (STDERR, ">>", "$output.stderr") or return("Can't open output file $output.stderr: $!");
 
         my $retval          = $self->run_one({command  => $self->cfg->{paths}->{simnow_path}."/simnow",
                                               argv     => [ "-e", $simnow_script, '--nogui' ],
