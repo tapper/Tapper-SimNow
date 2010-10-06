@@ -13,3 +13,4 @@ MANIFEST
 META.yml
 t/*.sqlite
 
+inc/
