@@ -8,6 +8,7 @@ license  'perl';
 install_script 'bin/artemis-simnow-start';
 
 build_requires 'Test::More';
+build_requires 'Test::Perl::Critic';
 
 requires 'common::sense';
 requires 'Artemis::Base'   => '0.010015';
