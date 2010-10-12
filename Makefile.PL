@@ -3,7 +3,7 @@ use inc::Module::Install;
 name     'Artemis-SimNow';
 all_from 'lib/Artemis/SimNow.pm';
 author   'OSRC SysInt Team <osrc-sysint@elbe.amd.com>';
-license  'perl';
+license  'freebsd';
 
 install_script 'bin/artemis-simnow-start';
 
@@ -15,9 +15,7 @@ requires 'Artemis::Base'   => '0.010015';
 requires 'Artemis::Remote' => '1.000018';
 requires 'Log::Log4perl';
 
-
 auto_install;
-
 
 WriteAll;
 
