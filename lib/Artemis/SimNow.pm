@@ -8,7 +8,7 @@ use File::Basename;
 use Artemis::Remote::Config;
 use Artemis::Remote::Net;
 
-extends 'Artemis::Base';
+extends 'Tapper::Base';
 
 has cfg => (is      => 'rw',
             isa     => 'HashRef',

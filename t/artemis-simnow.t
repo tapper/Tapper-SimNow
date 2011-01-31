@@ -2,7 +2,7 @@ use common::sense;
 
 use Test::More;
 
-use Artemis::Base;
+use Tapper::Base;
 use Artemis::SimNow;
 use Test::MockModule;
 
@@ -12,7 +12,7 @@ AMD SimNow is proprietary AMD software.  For terms of usage, please refer to the
 This internal release is built from revision: 17050 of SVN URL: svn+ssh://svdcsvn1/proj/svn/smn/simnow/trunk
 ';
 
-my $mock =Test::MockModule->new('Artemis::Base');
+my $mock =Test::MockModule->new('Tapper::Base');
 $mock->mock('run_one', sub { return 0 });
 $mock->mock('log_and_exec', sub { return (0, $version_string) });
 
