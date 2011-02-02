@@ -3,7 +3,7 @@ use common::sense;
 use Test::More;
 
 use Tapper::Base;
-use Artemis::SimNow;
+use Tapper::SimNow;
 use Test::MockModule;
 
 my $version_string =
@@ -18,15 +18,15 @@ $mock->mock('log_and_exec', sub { return (0, $version_string) });
 
 
 
-my $sim = Artemis::SimNow->new({cfg => {test_run => 1337, hostname => 'localhost'}});
+my $sim = Tapper::SimNow->new({cfg => {test_run => 1337, hostname => 'localhost'}});
 my $retval = $sim->generate_meta_report();
 is(ref $retval, 'HASH', 'Metareport is a hash');
 {
         no strict;
-        is($retval->{headers}->{'Artemis-SimNow-Version'}, '4.6.1', 'SimNow version');
-        is($retval->{headers}->{'Artemis-SimNow-SVN-Repository'}, 'svn+ssh://svdcsvn1/proj/svn/smn/simnow/trunk', 'SVN repository');
-        is($retval->{headers}->{'Artemis-SimNow-SVN-Version'}, '17050', 'SVN revision');
-        is($retval->{headers}->{'Artemis-SimNow-Device-Interface-Version'}, '16384', 'Device interface version');
+        is($retval->{headers}->{'Tapper-SimNow-Version'}, '4.6.1', 'SimNow version');
+        is($retval->{headers}->{'Tapper-SimNow-SVN-Repository'}, 'svn+ssh://svdcsvn1/proj/svn/smn/simnow/trunk', 'SVN repository');
+        is($retval->{headers}->{'Tapper-SimNow-SVN-Version'}, '17050', 'SVN revision');
+        is($retval->{headers}->{'Tapper-SimNow-Device-Interface-Version'}, '16384', 'Device interface version');
 }
 
 done_testing();
@@ -36,11 +36,11 @@ __END__
 # prepare for complete test
 
 my $tap_report;
-my $mock_net =Test::MockModule->new('Artemis::Remote::Net');
+my $mock_net =Test::MockModule->new('Tapper::Remote::Net');
 $mock_net->mock('tap_report_away', sub { (undef, $tap_report) = @_; return (0,10) });
 
 my $config = { };
-my $mock_conf =Test::MockModule->new('Artemis::Remote::Config');
+my $mock_conf =Test::MockModule->new('Tapper::Remote::Config');
 $mock_conf->mock('get_local_data', sub { return $config });
 
 $retval = $sim->run();

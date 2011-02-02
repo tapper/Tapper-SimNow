@@ -1,8 +1,8 @@
-#!/opt/artemis/bin/perl
+#!/opt/tapper/bin/perl
 
 use common::sense;
 
-use Artemis::SimNow;
+use Tapper::SimNow;
 use Log::Log4perl;
 
 use Daemon::Daemonize qw/:all/;
@@ -15,5 +15,5 @@ BEGIN {
 Daemon::Daemonize->daemonize(close => "std");
 
 
-my $sim = Artemis::SimNow->new();
+my $sim = Tapper::SimNow->new();
 $sim->run();

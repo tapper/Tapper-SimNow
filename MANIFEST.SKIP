@@ -27,4 +27,4 @@
 \.rej$
 
 # Avoid archives of this distribution
-\bArtemis-SimNow-[\d\.\_]+
+\bTapper-SimNow-[\d\.\_]+

@@ -1,12 +1,12 @@
-package Artemis::SimNow;
+package Tapper::SimNow;
 
 use Moose;
 use common::sense;
 
 use File::Basename;
 
-use Artemis::Remote::Config;
-use Artemis::Remote::Net;
+use Tapper::Remote::Config;
+use Tapper::Remote::Net;
 
 extends 'Tapper::Base';
 
@@ -18,7 +18,7 @@ has cfg => (is      => 'rw',
 
 =head1 NAME
 
-Artemis::SimNow - Control running a SimNow session!
+Tapper::SimNow - Control running a SimNow session!
 
 =head1 VERSION
 
@@ -30,12 +30,12 @@ our $VERSION = '1.000038';
 
 =head1 SYNOPSIS
 
-Artemis::SimNow controls running SimNow session with Artemis. With this
-module Artemis is able to treat similar to virtualisation tests.
+Tapper::SimNow controls running SimNow session with Tapper. With this
+module Tapper is able to treat similar to virtualisation tests.
 
-    use Artemis::SimNow;
+    use Tapper::SimNow;
 
-    my $simnow = Artemis::SimNow->new();
+    my $simnow = Tapper::SimNow->new();
     $simnow->run();
 
 =head1 FUNCTIONS
@@ -53,10 +53,10 @@ example.
 sub get_static_tap_headers
 {
         my ($self, $report) = @_;
-        $report->{headers}{'Artemis-reportgroup-testrun'} = $self->cfg->{test_run};
-        $report->{headers}{'Artemis-suite-name'}          = "SimNow-Metainfo";
-        $report->{headers}{'Artemis-suite-version'}       = $VERSION;
-        $report->{headers}{'Artemis-machine-name'}        = $self->cfg->{hostname};
+        $report->{headers}{'Tapper-reportgroup-testrun'} = $self->cfg->{test_run};
+        $report->{headers}{'Tapper-suite-name'}          = "SimNow-Metainfo";
+        $report->{headers}{'Tapper-suite-version'}       = $VERSION;
+        $report->{headers}{'Tapper-machine-name'}        = $self->cfg->{hostname};
         return $report;
 }
 
@@ -83,9 +83,9 @@ sub generate_meta_report
                 push @{$report->{tests}}, {test => "Getting SimNow version"};
 
                 if ($retval =~ m/This is AMD SimNow version (\d+\.\d+\.\d+(-NDA)?)/) {
-                        $report->{headers}{'Artemis-SimNow-Version'} = $1;
+                        $report->{headers}{'Tapper-SimNow-Version'} = $1;
                 } else {
-                        $report->{headers}{'Artemis-SimNow-Version'} = 'Not set';
+                        $report->{headers}{'Tapper-SimNow-Version'} = 'Not set';
                         $error = 1;
                 }
                 push @{$report->{tests}}, {error => $error, test => "Parsing SimNow version"};
@@ -93,23 +93,23 @@ sub generate_meta_report
 
                 $error = 0;
                 if ($retval =~ m/This internal release is built from revision: (.+) of SVN URL: (.+)/) {
-                        $report->{headers}{'Artemis-SimNow-SVN-Version'}    =  $1;
-                        $report->{headers}{'Artemis-SimNow-SVN-Repository'} =  $2;
+                        $report->{headers}{'Tapper-SimNow-SVN-Version'}    =  $1;
+                        $report->{headers}{'Tapper-SimNow-SVN-Repository'} =  $2;
                 } elsif ($retval =~ m/Build number: (.+)/) {
-                        $report->{headers}{'Artemis-SimNow-SVN-Version'}    =  $1;
-                        $report->{headers}{'Artemis-SimNow-SVN-Repository'} =  'Not set';
+                        $report->{headers}{'Tapper-SimNow-SVN-Version'}    =  $1;
+                        $report->{headers}{'Tapper-SimNow-SVN-Repository'} =  'Not set';
                 } else {
-                        $report->{headers}{'Artemis-SimNow-SVN-Version'}    =  'Not set';
-                        $report->{headers}{'Artemis-SimNow-SVN-Repository'} =  'Not set';
+                        $report->{headers}{'Tapper-SimNow-SVN-Version'}    =  'Not set';
+                        $report->{headers}{'Tapper-SimNow-SVN-Repository'} =  'Not set';
                         $error = 1;
                 }
                 push @{$report->{tests}}, {error => $error, test => "Parsing SVN version"};
 
                 $error = 0;
                 if ($retval =~ m/supporting version (\d+) of the AMD SimNow Device Interface/) {
-                        $report->{headers}{'Artemis-SimNow-Device-Interface-Version'} = $1;
+                        $report->{headers}{'Tapper-SimNow-Device-Interface-Version'} = $1;
                 } else {
-                        $report->{headers}{'Artemis-SimNow-Device-Interface-Version'} = 'Not set';
+                        $report->{headers}{'Tapper-SimNow-Device-Interface-Version'} = 'Not set';
                         $error = 1;
                 }
                 push @{$report->{tests}}, {error => $error, test => "Parsing device interface version"};
@@ -121,7 +121,7 @@ sub generate_meta_report
                 close $fh;
 
                 if ($content =~ m|open bsds/(\w+)\.bsd|) {
-                        $report->{headers}{'Artemis-SimNow-BSD-File'} = $1;
+                        $report->{headers}{'Tapper-SimNow-BSD-File'} = $1;
                 } else {
                         $error = 1;
                 }
@@ -129,7 +129,7 @@ sub generate_meta_report
 
                 $error = 0;
                 if ($content =~ m|ide:0.image master .*/((?:\w\|\.)+?)(?:\.[a-zA-Z]+)?$|m) {
-                        $report->{headers}{'Artemis-SimNow-Image-File'} = $1;
+                        $report->{headers}{'Tapper-SimNow-Image-File'} = $1;
                 } else {
                         $error = 1;
                 }
@@ -137,8 +137,8 @@ sub generate_meta_report
 
                 $error = 0;
         } else {
-                $report->{headers}{'Artemis-SimNow-BSD-File'} = 'Not set';
-                $report->{headers}{'Artemis-SimNow-Image-File'} = 'Not set';
+                $report->{headers}{'Tapper-SimNow-BSD-File'} = 'Not set';
+                $report->{headers}{'Tapper-SimNow-Image-File'} = 'Not set';
                 $error = 1;
         }
         push @{$report->{tests}}, {error => $error, test => "Reading Simnow config file"};
@@ -252,10 +252,10 @@ sub run
         my ($self) = @_;
         $self->log->info("Starting Simnow");
 
-        my $consumer = Artemis::Remote::Config->new();
+        my $consumer = Tapper::Remote::Config->new();
         my $config   = $consumer->get_local_data('simnow');
         die $config unless ref($config) eq 'HASH';
-        my $net      = Artemis::Remote::Net->new($config);
+        my $net      = Tapper::Remote::Net->new($config);
         $self->cfg( $config );
         $net->mcp_inform("start-test");
 
@@ -314,4 +314,4 @@ under the same terms as Perl itself.
 
 =cut
 
-1; # End of Artemis::SimNow
+1; # End of Tapper::SimNow
