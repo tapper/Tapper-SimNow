@@ -18,7 +18,7 @@ has cfg => (is      => 'rw',
 
 =head1 NAME
 
-Tapper::SimNow - Control running a SimNow session!
+Tapper::SimNow - Tapper - Support for running SimNow sessions
 
 =cut
 
