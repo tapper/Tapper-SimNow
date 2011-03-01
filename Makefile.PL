@@ -2,7 +2,7 @@ use inc::Module::Install;
 
 name     'Tapper-SimNow';
 all_from 'lib/Tapper/SimNow.pm';
-author   'OSRC SysInt Team <osrc-sysint@elbe.amd.com>';
+author   'AMD OSRC Tapper Team <tapper@amd64.org>';
 license  'freebsd';
 
 install_script 'bin/tapper-simnow-start';
