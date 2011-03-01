@@ -13,8 +13,8 @@ build_requires 'Test::Perl::Critic';
 author_requires 'Module::Install::WriteAll';
 
 requires 'common::sense';
-requires 'Tapper::Base'    => '0.010015';
-requires 'Tapper::Remote' => '1.000018';
+requires 'Tapper::Base'    => "3.000001";
+requires 'Tapper::Remote'  => "3.000001";
 requires 'Log::Log4perl';
 
 auto_install;

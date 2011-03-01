@@ -20,12 +20,9 @@ has cfg => (is      => 'rw',
 
 Tapper::SimNow - Control running a SimNow session!
 
-=head1 VERSION
-
-
 =cut
 
-our $VERSION = '1.000038';
+our $VERSION = '3.000001';
 
 
 =head1 SYNOPSIS
