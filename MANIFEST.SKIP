@@ -1,5 +1,6 @@
 # Avoid version control files.
 \B\.gitignore$
+^.git
 
 # Avoid Makemaker generated and utility files.
 \bMakefile$
