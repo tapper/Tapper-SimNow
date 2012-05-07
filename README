@@ -6,7 +6,6 @@ Support for running SimNow sessions
 (This lib is going to be deprecated as generic ssh support
  in Tapper is now able to replace most of its functionality.)
 
-
 About Tapper
 ============
 

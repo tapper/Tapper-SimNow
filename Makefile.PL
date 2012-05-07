@@ -22,5 +22,8 @@ requires 'Log::Log4perl';
 
 auto_install;
 
+repository 'git://github.com/amd/Tapper-SimNow.git';
+bugtracker 'http://rt.cpan.org/NoAuth/ReportBug.html?Queue=Tapper-SimNow';
+
 WriteAll;
 
