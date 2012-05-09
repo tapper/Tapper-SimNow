@@ -1,4 +1,6 @@
 #!/opt/tapper/bin/perl
+# PODNAME: tapper-simnow
+# ABSTRACT: cmdline frontend to Tapper::SimNow/daemonize
 
 use common::sense;
 
@@ -7,13 +9,11 @@ use Log::Log4perl;
 
 use Daemon::Daemonize qw/:all/;
 
-
 BEGIN {
         Log::Log4perl::init('/etc/log4perl.cfg');
 }
 
 Daemon::Daemonize->daemonize(close => "std");
-
 
 my $sim = Tapper::SimNow->new();
 $sim->run();

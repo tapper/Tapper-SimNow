@@ -1,4 +1,5 @@
 package Tapper::SimNow;
+# ABSTRACT: Tapper - Support for running SimNow sessions
 
 use Moose;
 use common::sense;
@@ -16,15 +17,6 @@ has cfg => (is      => 'rw',
            );
 
 
-=head1 NAME
-
-Tapper::SimNow - Tapper - Support for running SimNow sessions
-
-=cut
-
-our $VERSION = '3.000001';
-
-
 =head1 SYNOPSIS
 
 Tapper::SimNow controls running SimNow session with Tapper. With this
@@ -39,7 +31,7 @@ module Tapper is able to treat similar to virtualisation tests.
 
 =head2 get_static_tap_headers
 
-Create a report hash that contains all headers that don't need to be
+Create a report hash that contains all headers that do not need to be
 produced somehow. This includes suite-name and suite-version for
 example.
 
@@ -52,7 +44,7 @@ sub get_static_tap_headers
         my ($self, $report) = @_;
         $report->{headers}{'Tapper-reportgroup-testrun'} = $self->cfg->{test_run};
         $report->{headers}{'Tapper-suite-name'}          = "SimNow-Metainfo";
-        $report->{headers}{'Tapper-suite-version'}       = $VERSION;
+        $report->{headers}{'Tapper-suite-version'}       = $Tapper::SimNow::VERSION;
         $report->{headers}{'Tapper-machine-name'}        = $self->cfg->{hostname};
         return $report;
 }
@@ -289,24 +281,5 @@ sub run
         $self->log->info("Simnow prepared and running");
         return 0;
 }
-
-
-=head1 AUTHOR
-
-AMD OSRC Tapper Team, C<< <tapper at amd64.org> >>
-
-=head1 BUGS
-
-
-=head1 ACKNOWLEDGEMENTS
-
-
-=head1 COPYRIGHT & LICENSE
-
-Copyright 2008-2011 AMD OSRC Tapper Team, all rights reserved.
-
-This program is released under the following license: freebsd
-
-=cut
 
 1; # End of Tapper::SimNow
