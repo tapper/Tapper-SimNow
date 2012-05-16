@@ -1,6 +1,8 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+
+4.0.1     2012-05-16
         - added metainfo handling
         - daemonize simnow starter
         - kill simnow instance before creating console
