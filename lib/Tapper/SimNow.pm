@@ -267,17 +267,18 @@ sub run
                 $retval = $self->create_console();
                 last if $retval;
 
-                my $report = $self->generate_meta_report();
-                my $tap = $net->tap_report_create($report);
-                my $error;
-                ($error, $retval) = $net->tap_report_away($tap);
-                last if $error;
 
                 $retval = $self->start_mediator();
                 last if $retval;
 
                 $retval = $self->start_simnow();
                 last if $retval;
+
+                my $report = $self->generate_meta_report();
+                my $tap = $net->tap_report_create($report);
+                my $error;
+                ($error, $retval) = $net->tap_report_away($tap);
+                last if $error;
 
         }
         if ($retval) {
