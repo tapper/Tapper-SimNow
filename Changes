@@ -1,0 +1,15 @@
+Revision history for {{$dist->name}}
+
+{{$NEXT}}
+
+4.0.1     2012-05-16
+        - added metainfo handling
+        - daemonize simnow starter
+        - kill simnow instance before creating console
+        - big Dist::Zilla roundhouse kick
+
+2011-03-02  Steffen Schwigon  <steffen.schwigon@amd.com>
+
+	* v3.0
+
+	* first public CPAN release
